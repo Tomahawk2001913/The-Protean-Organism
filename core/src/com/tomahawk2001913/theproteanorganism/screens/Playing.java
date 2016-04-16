@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.tomahawk2001913.theproteanorganism.TPOMain;
+import com.tomahawk2001913.theproteanorganism.io.AssetHandler;
 import com.tomahawk2001913.theproteanorganism.io.PlayingInputHandler;
 import com.tomahawk2001913.theproteanorganism.map.TileMap;
 import com.tomahawk2001913.theproteanorganism.organisms.Organisms;
@@ -32,6 +33,8 @@ public class Playing implements Screen {
 		player = new Player(new Vector2(0, 0), Organisms.HUMAN, map);
 		map.addOrganism(player);
 		
+		if(!AssetHandler.fontExists(20)) AssetHandler.generateFont(20);
+		
 		Gdx.input.setInputProcessor(new PlayingInputHandler(player));
 	}
 
@@ -46,6 +49,8 @@ public class Playing implements Screen {
 		batch.begin();
 		
 		map.render(batch);
+		
+		AssetHandler.getFont(20).draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, 0);
 		
 		batch.end();
 		
