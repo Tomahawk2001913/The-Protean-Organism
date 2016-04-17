@@ -63,22 +63,22 @@ public abstract class Organism {
 				
 				Rectangle tileBounds = new Rectangle(((int) (location.x / TileMap.TILE_DIMENSION) + x) * TileMap.TILE_DIMENSION, ((int) (location.y / TileMap.TILE_DIMENSION + y)) * TileMap.TILE_DIMENSION, TileMap.TILE_DIMENSION, TileMap.TILE_DIMENSION);
 				if(bounds.overlaps(tileBounds)) {
+					if(tileBounds.y > bounds.y && bounds.y + type.getHeight() > tileBounds.y) {
+						location.set(location.x, tileBounds.y - type.getHeight());
+						bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
+						onGround = true;
+					} else if(bounds.y < tileBounds.y + tileBounds.height && Math.abs(bounds.y - tileBounds.y) > 50 && (int) (bounds.x / TileMap.TILE_DIMENSION) <= (int) (tileBounds.x / TileMap.TILE_DIMENSION)) {
+						location.set(location.x, tileBounds.y + tileBounds.height);
+						bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
+						velocity.y = 0;
+					}
+					
 					if(!(x == 0 && y == 0) && tileBounds.x > bounds.x && bounds.x + type.getWidth() > tileBounds.x && bounds.x + type.getWidth() < tileBounds.x + tileBounds.width && (int) (bounds.y / TileMap.TILE_DIMENSION) == (int) (tileBounds.y / TileMap.TILE_DIMENSION)) {
 						location.set(tileBounds.x - type.getWidth(), location.y);
 						bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
 					} else if(bounds.x > tileBounds.x && tileBounds.x + tileBounds.width > bounds.x && (int) (bounds.y / TileMap.TILE_DIMENSION) == (int) (tileBounds.y / TileMap.TILE_DIMENSION)) {
 						location.set(tileBounds.x + tileBounds.width, location.y);
 						bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
-					}
-					
-					if(tileBounds.y > bounds.y && bounds.y + type.getHeight() > tileBounds.y) {
-						location.set(location.x, tileBounds.y - type.getHeight());
-						bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
-						onGround = true;
-					} else if(bounds.y < tileBounds.y + tileBounds.height && Math.abs(bounds.y - tileBounds.y) > 32 && (int) (bounds.x / TileMap.TILE_DIMENSION) <= (int) (tileBounds.x / TileMap.TILE_DIMENSION)) {
-						location.set(location.x, tileBounds.y + tileBounds.height);
-						bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
-						velocity.y = 0;
 					}
 				}
 			}
