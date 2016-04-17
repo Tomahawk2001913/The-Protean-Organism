@@ -21,7 +21,7 @@ public class TPOMain extends Game {
 		batch = new SpriteBatch();
 		batch.setProjectionMatrix(camera.combined);
 		
-		setScreen(new Playing(AssetHandler.map));
+		setScreen(new Playing(AssetHandler.map1));
 	}
 	
 	@Override

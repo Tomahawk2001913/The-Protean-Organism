@@ -17,25 +17,28 @@ public class Playing implements Screen {
 	private OrthographicCamera camera = TPOMain.camera;
 	private SpriteBatch batch = TPOMain.batch;	
 	
-	private TileMap map;
+	private static TileMap map;
+	private static boolean mapChanged = false;
 	
 	private Player player;
 	
 	// Constants
-	public static final float MAX_DELTA = 0.15f;
+	public static final float MAX_DELTA = 0.1f;
 	
 	public Playing(int[][] map) {
-		this.map = TileMap.convertMapArray(map);
+		Playing.map = TileMap.convertMapArray(map);
 	}
 	
 	@Override
 	public void show() {
-		player = new Player(new Vector2(0, 0), Organisms.HUMAN, map);
+		player = new Player(new Vector2(TileMap.TILE_DIMENSION, TileMap.TILE_DIMENSION), Organisms.HUMAN, map);
 		map.addOrganism(player);
 		
 		if(!AssetHandler.fontExists(20)) AssetHandler.generateFont(20);
 		
 		Gdx.input.setInputProcessor(new PlayingInputHandler(player));
+		
+		for(Organisms organism : Organisms.values()) if(organism != Organisms.HUMAN) organism.setUnlocked(false);
 	}
 
 	@Override
@@ -45,12 +48,22 @@ public class Playing implements Screen {
 		
 		if(delta >= MAX_DELTA) delta = MAX_DELTA;
 		
+		if(mapChanged) {
+			mapChanged = false;
+			show();
+		}
+		
 		// Renders
 		batch.begin();
 		
 		map.render(batch);
 		
 		AssetHandler.getFont(20).draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, 0);
+		AssetHandler.getFont(20).draw(batch, "Unlocked shifts:", camera.position.x + 4 - camera.viewportWidth / 2, camera.position.y + 4 - camera.viewportHeight / 2);
+		
+		for(int i = 0; i < Organisms.values().length; i++) {
+			if(Organisms.values()[i].isUnlocked()) AssetHandler.getFont(20).draw(batch, Organisms.values()[i].toString(), camera.position.x + 4 - camera.viewportWidth / 2, camera.position.y + 20 + 20 * i - camera.viewportHeight / 2);
+		}
 		
 		batch.end();
 		
@@ -64,6 +77,11 @@ public class Playing implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		
+	}
+	
+	public static void changeMap(TileMap map) {
+		Playing.map = map;
+		mapChanged = true;
 	}
 
 	@Override

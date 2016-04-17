@@ -1,5 +1,6 @@
 package com.tomahawk2001913.theproteanorganism.organisms;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -13,6 +14,7 @@ public abstract class Organism {
 	private TileMap tm;
 	
 	private float time = 0;
+	private boolean onGround = false;
 	
 	// Constants
 	public static final float TERMINAL_VELOCITY = 300.0f;
@@ -29,14 +31,19 @@ public abstract class Organism {
 	}
 	
 	public void render(SpriteBatch batch) {
-		if(velocity.x == 0) batch.draw(type.getStandingTextureRegion(), location.x, location.y, type.getWidth(), type.getHeight());
+		if(velocity.x == 0 && onGround || type.getMovingAnimation() == null) batch.draw(type.getStandingTextureRegion(), location.x, location.y, type.getWidth(), type.getHeight());
 		else batch.draw(type.getMovingAnimation().getKeyFrame(time), location.x, location.y, type.getWidth(), type.getHeight());
 	}
 	
 	public void update(float delta) {
 		time += delta;
 		
-		velocity.y += TileMap.GRAVITY;
+		if(time % 7 < 0.1f && type.getNoise() != null) {
+			type.getNoise().stop();
+			type.getNoise().play(0.8f);
+		}
+		
+		if(type.useGravity()) velocity.y += TileMap.GRAVITY;
 		
 		// Keep things from going too fast.
 		if(velocity.x > TERMINAL_VELOCITY) velocity.x = TERMINAL_VELOCITY;
@@ -47,22 +54,31 @@ public abstract class Organism {
 		location.add(velocity.x * delta, velocity.y * delta);
 		bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
 		
+		if(velocity.y < 0) onGround = false;
+		
 		for(int x = -1; x < 2; x++) {
 			for(int y = -1; y < 2; y++) {
 				Tiles tile = tm.getTile((int) (location.x / TileMap.TILE_DIMENSION) + x, (int) (location.y / TileMap.TILE_DIMENSION + y));
-				if(x == 0 && y == 0 || tile == null || tile == Tiles.AIR) continue;
+				if(tile == null || tile == Tiles.AIR) continue;
 				
 				Rectangle tileBounds = new Rectangle(((int) (location.x / TileMap.TILE_DIMENSION) + x) * TileMap.TILE_DIMENSION, ((int) (location.y / TileMap.TILE_DIMENSION + y)) * TileMap.TILE_DIMENSION, TileMap.TILE_DIMENSION, TileMap.TILE_DIMENSION);
 				if(bounds.overlaps(tileBounds)) {
-					if(tileBounds.x > bounds.x && bounds.x + type.getWidth() > tileBounds.x && bounds.x + type.getWidth() < tileBounds.x + tileBounds.width && Math.abs(bounds.y - tileBounds.y) < 10) {
+					if(!(x == 0 && y == 0) && tileBounds.x > bounds.x && bounds.x + type.getWidth() > tileBounds.x && bounds.x + type.getWidth() < tileBounds.x + tileBounds.width && (int) (bounds.y / TileMap.TILE_DIMENSION) == (int) (tileBounds.y / TileMap.TILE_DIMENSION)) {
 						location.set(tileBounds.x - type.getWidth(), location.y);
-					}
-					if(tileBounds.x < bounds.x && tileBounds.x + tileBounds.width > bounds.x && Math.abs(bounds.y - tileBounds.y) < 10) {
-						System.out.println("right side of tile");
+						bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
+					} else if(bounds.x > tileBounds.x && tileBounds.x + tileBounds.width > bounds.x && (int) (bounds.y / TileMap.TILE_DIMENSION) == (int) (tileBounds.y / TileMap.TILE_DIMENSION)) {
 						location.set(tileBounds.x + tileBounds.width, location.y);
+						bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
 					}
+					
 					if(tileBounds.y > bounds.y && bounds.y + type.getHeight() > tileBounds.y) {
 						location.set(location.x, tileBounds.y - type.getHeight());
+						bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
+						onGround = true;
+					} else if(bounds.y < tileBounds.y + tileBounds.height && Math.abs(bounds.y - tileBounds.y) > 32 && (int) (bounds.x / TileMap.TILE_DIMENSION) <= (int) (tileBounds.x / TileMap.TILE_DIMENSION)) {
+						location.set(location.x, tileBounds.y + tileBounds.height);
+						bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
+						velocity.y = 0;
 					}
 				}
 			}
@@ -71,7 +87,7 @@ public abstract class Organism {
 	
 	public void changeType(Organisms type) {
 		this.type = type;
-		bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
+		if(type != null) bounds.set(location.x, location.y, type.getWidth(), type.getHeight());
 	}
 	
 	public Vector2 getLocation() {
@@ -88,5 +104,9 @@ public abstract class Organism {
 	
 	public Organisms getType() {
 		return type;
+	}
+	
+	public boolean isOnGround() {
+		return onGround;
 	}
 }

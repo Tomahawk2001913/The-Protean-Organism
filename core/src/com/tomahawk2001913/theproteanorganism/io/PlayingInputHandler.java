@@ -1,5 +1,6 @@
 package com.tomahawk2001913.theproteanorganism.io;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.tomahawk2001913.theproteanorganism.organisms.Player;
@@ -13,7 +14,10 @@ public class PlayingInputHandler implements InputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		if(keycode == Keys.A || keycode == Keys.LEFT) {
+		if(keycode == Keys.ESCAPE) {
+			Gdx.app.exit();
+			return true;
+		} else if(keycode == Keys.A || keycode == Keys.LEFT) {
 			player.moveLeft();
 			return true;
 		} else if(keycode == Keys.D || keycode == Keys.RIGHT) {
@@ -22,7 +26,14 @@ public class PlayingInputHandler implements InputProcessor {
 		} else if(keycode == Keys.SPACE) {
 			player.jump();
 			return true;
+		} else if(keycode == Keys.W || keycode == Keys.UP) {
+			player.shiftUp();
+			return true;
+		} else if(keycode == Keys.S || keycode == Keys.DOWN) {
+			player.shiftDown();
+			return true;
 		}
+		
 		return false;
 	}
 

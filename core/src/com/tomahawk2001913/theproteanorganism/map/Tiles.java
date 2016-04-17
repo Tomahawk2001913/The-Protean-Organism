@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.tomahawk2001913.theproteanorganism.io.AssetHandler;
 
 public enum Tiles {
-	AIR(null), DIRT(AssetHandler.dirtTile), GRASS(AssetHandler.grassTile);
+	AIR(null), DIRT(AssetHandler.dirtTile), GRASS(AssetHandler.grassTile), BARRIERBRICKTILE(AssetHandler.barrierBrickTile);
 	
 	private TextureRegion img;
 	
