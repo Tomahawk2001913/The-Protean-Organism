@@ -43,7 +43,7 @@ public class Playing implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0.2f, 0.5f, 1, 1);
+		Gdx.gl.glClearColor(0.25f, 0.55f, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		if(delta >= MAX_DELTA) delta = MAX_DELTA;
@@ -61,6 +61,8 @@ public class Playing implements Screen {
 		AssetHandler.getFont(20).draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 64, 64);
 		if(winner && gameOver) {
 			changeMap(TileMap.convertMapArray(AssetHandler.map1));
+			setWinner(false);
+			setGameOver(false);
 		} else if(winner) {
 			AssetHandler.getFont(20).draw(batch, "You won! Use the portal to restart.", camera.position.x + 4 - camera.viewportWidth / 2, camera.position.y - 16 + camera.viewportHeight / 2);
 		} else if(gameOver) {
@@ -90,8 +92,6 @@ public class Playing implements Screen {
 	public static void changeMap(TileMap map) {
 		Playing.map = map;
 		mapChanged = true;
-		setWinner(false);
-		setGameOver(false);
 	}
 	
 	public static void setWinner(boolean won) {

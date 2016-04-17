@@ -30,8 +30,16 @@ public abstract class Organism {
 	}
 	
 	public void render(SpriteBatch batch) {
-		if(velocity.x == 0 && onGround || type.getMovingAnimation() == null) batch.draw(type.getStandingTextureRegion(), location.x, location.y, type.getWidth(), type.getHeight());
-		else batch.draw(type.getMovingAnimation().getKeyFrame(time), location.x, location.y, type.getWidth(), type.getHeight());
+		if(velocity.x == 0 && onGround || type.getMovingAnimation() == null) {
+			batch.draw(type.getStandingTextureRegion(), location.x, location.y, type.getWidth(), type.getHeight());
+		} else {
+			if(velocity.x < 0) {
+				if(!type.getMovingAnimation().getKeyFrame(time).isFlipX()) type.getMovingAnimation().getKeyFrame(time).flip(true, false);
+			} else if(velocity.x > 0) {
+				if(type.getMovingAnimation().getKeyFrame(time).isFlipX()) type.getMovingAnimation().getKeyFrame(time).flip(true, false);
+			}
+			batch.draw(type.getMovingAnimation().getKeyFrame(time), location.x, location.y, type.getWidth(), type.getHeight());
+		}
 	}
 	
 	public void update(float delta) {

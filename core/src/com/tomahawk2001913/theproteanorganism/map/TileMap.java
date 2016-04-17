@@ -136,10 +136,16 @@ public class TileMap {
 					convert.addOrganism(new Portal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), convertMapArray(AssetHandler.map1)));
 					tiles[x][y] = Tiles.AIR;
 				} else if(array[y][x] == -8) {
-					convert.addOrganism(new WinnerPortal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), convertMapArray(AssetHandler.winner)));
+					convert.addOrganism(new Portal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), convertMapArray(AssetHandler.map3)));
 					tiles[x][y] = Tiles.AIR;
 				} else if(array[y][x] == -9) {
 					convert.addOrganism(new RestartPortal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), null));
+					tiles[x][y] = Tiles.AIR;
+				} else if(array[y][x] == -10) {
+					convert.addOrganism(new Portal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), convertMapArray(AssetHandler.map4)));
+					tiles[x][y] = Tiles.AIR;
+				} else if(array[y][x] == -11) {
+					convert.addOrganism(new WinnerPortal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), convertMapArray(AssetHandler.winner)));
 					tiles[x][y] = Tiles.AIR;
 				} else tiles[x][y] = Tiles.values()[array[y][x]];
 			}
