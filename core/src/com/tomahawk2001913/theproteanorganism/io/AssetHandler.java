@@ -20,7 +20,7 @@ public class AssetHandler {
 	public static TextureRegion grassTile, dirtTile, barrierBrickTile;
 	
 	// Organisms
-	public static TextureRegion human1, human2, spikes, cardinal1, cardinal2, rabbit1, rabbit2, portal;
+	public static TextureRegion human1, human2, spikes, cardinal1, cardinal2, rabbit1, rabbit2, portal, rabbitPoison;
 	public static Animation humanAnimation, cardinalAnimation, rabbitAnimation;
 	
 	// Coin
@@ -36,12 +36,34 @@ public class AssetHandler {
 	// Fonts
 	public static HashMap<Integer, BitmapFont> fonts;
 	
-	public static int[][] map1 = {
+	public static int[][] gameOver = {
+			{3, 3, 3, 3, 3, 3, 3},
+			{3, 0, 0, 0, 0, 0, 3},
+			{3, 0, 0, 0, 0, -7, 3},
+			{3, 2, 2, 2, 2, 2, 3},
+			{3, 1, 1, 1, 1, 1, 3},
+			{3, 3, 3, 3, 3, 3, 3}
+	}, winner = {
+			{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+			{3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -9, 3},
+			{3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3},
+			{3, 0, 0, 2, 2, 2, 0, 0, 2, 2, 0, 0, 3},
+			{3, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 3},
+			{3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3},
+			{3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3},
+			{3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3},
+			{3, 0, 0, -2, 0, 0, 0, 0, 0, -3, 0, 0, 3},
+			{3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3},
+			{3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3},
+			{3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3},
+			{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
+	}, map1 = {
 			{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
 			{3, 0, 0, 0, 0, 0, 0, 0, 0, -2, 0, 0, 3},
-			{3, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 3},
-			{3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 3},
-			{3, 0, 0, 0, -3, 0, 0, 0, 0, 0, 1, 0, 3},
+			{3, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3},
+			{3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3},
+			{3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3},
+			{3, 0, 0, 0, -3, 0, 0, 0, 0, 0, 1, 1, 3},
 			{3, 0, 0, 2, 2, 2, 0, 0, 0, 0, -1, -4, 3},
 			{3, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3},
 			{3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3},
@@ -50,9 +72,24 @@ public class AssetHandler {
 			{3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3},
 			{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
 	}, map2 = {
-			{0, 0, 0},
-			{0, 0, 0},
-			{2, 2, 2}
+			{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+			{3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, 3},
+			{3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3},
+			{3, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 3},
+			{3, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 3},
+			{3, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 3},
+			{3, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 3},
+			{3, 1, -2, 0, -5, 0, 0, 0, 0, 0, 1, 1, 1, 3},
+			{3, 1, 2, 2, 2, 2, 2, 2, 0, 0, 1, 1, 1, 3}, 
+			{3, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0, 1, 1, 3},
+			{3, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0, 1, 3},
+			{3, 1, -3, -5, 0, 0, -1, 0, 0, -5, 0, 0, 1, 3},
+			{3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3},
+			{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
+	}, map3 = {
+			{0, 0, 0, 0, 0},
+			{0, 0, 0, 0, -8},
+			{2, 2, 2, 2, 2}
 	};
 	
 	public static void create() {
@@ -94,11 +131,14 @@ public class AssetHandler {
 		rabbit2 = new TextureRegion(texture, 68, 48, 32, 16);
 		rabbit2.flip(false, true);
 		
+		rabbitAnimation = new Animation(0.1f, new TextureRegion[] {rabbit1, rabbit2});
+		rabbitAnimation.setPlayMode(PlayMode.LOOP);
+		
 		portal = new TextureRegion(texture, 64, 64, 32, 32);
 		portal.flip(false, true);
 		
-		rabbitAnimation = new Animation(0.1f, new TextureRegion[] {rabbit1, rabbit2});
-		rabbitAnimation.setPlayMode(PlayMode.LOOP);
+		rabbitPoison = new TextureRegion(texture, 96, 80, 32, 16);
+		rabbitPoison.flip(false, true);
 		
 		coin1 = new TextureRegion(texture, 0, 64, 32, 32);
 		coin1.flip(false, true);

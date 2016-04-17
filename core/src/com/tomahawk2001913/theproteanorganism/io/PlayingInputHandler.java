@@ -8,6 +8,8 @@ import com.tomahawk2001913.theproteanorganism.organisms.Player;
 public class PlayingInputHandler implements InputProcessor {
 	private Player player;
 	
+	private boolean fullscreen = false;
+	
 	public PlayingInputHandler(Player player) {
 		this.player = player;
 	}
@@ -17,6 +19,14 @@ public class PlayingInputHandler implements InputProcessor {
 		if(keycode == Keys.ESCAPE) {
 			Gdx.app.exit();
 			return true;
+		} else if(keycode == Keys.F11) {
+			if(fullscreen) {
+				Gdx.graphics.setWindowedMode(800, 600);
+				fullscreen = false;
+			} else {
+				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+				fullscreen = true;
+			}
 		} else if(keycode == Keys.A || keycode == Keys.LEFT) {
 			player.moveLeft();
 			return true;

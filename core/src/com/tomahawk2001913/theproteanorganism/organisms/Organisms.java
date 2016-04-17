@@ -9,7 +9,8 @@ public enum Organisms {
 	HUMAN(AssetHandler.human1, AssetHandler.humanAnimation, null, 36, 64, 90, true, false, true), 
 	CARDINAL(AssetHandler.cardinal1, AssetHandler.cardinalAnimation, AssetHandler.chirp, 48, 48, 100, true, true, false), 
 	RABBIT(AssetHandler.rabbit1, AssetHandler.rabbitAnimation, null, 64, 32, 120, true, false, false), 
-	SPIKES(AssetHandler.spikes, null, null, 64, 32, 0, false, false, false);
+	SPIKES(AssetHandler.spikes, null, null, 64, 32, 0, false, false, false),
+	RABBITPOISON(AssetHandler.rabbitPoison, null, null, 64, 32, 0, false, false, false);
 	
 	private TextureRegion standing;
 	private Animation moving;

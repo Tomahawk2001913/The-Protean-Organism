@@ -21,6 +21,8 @@ public class TPOMain extends Game {
 		batch = new SpriteBatch();
 		batch.setProjectionMatrix(camera.combined);
 		
+		Gdx.graphics.setTitle("The Protean Organism - A Ludum Dare 35 submission by Tomahawk2001913");
+		
 		setScreen(new Playing(AssetHandler.map1));
 	}
 	

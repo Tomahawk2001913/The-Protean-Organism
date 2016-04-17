@@ -18,7 +18,7 @@ public class Playing implements Screen {
 	private SpriteBatch batch = TPOMain.batch;	
 	
 	private static TileMap map;
-	private static boolean mapChanged = false;
+	private static boolean mapChanged = false, winner = false, gameOver = false;
 	
 	private Player player;
 	
@@ -43,7 +43,7 @@ public class Playing implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(0.2f, 0.5f, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		if(delta >= MAX_DELTA) delta = MAX_DELTA;
@@ -58,7 +58,14 @@ public class Playing implements Screen {
 		
 		map.render(batch);
 		
-		AssetHandler.getFont(20).draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, 0);
+		AssetHandler.getFont(20).draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 64, 64);
+		if(winner && gameOver) {
+			changeMap(TileMap.convertMapArray(AssetHandler.map1));
+		} else if(winner) {
+			AssetHandler.getFont(20).draw(batch, "You won! Use the portal to restart.", camera.position.x + 4 - camera.viewportWidth / 2, camera.position.y - 16 + camera.viewportHeight / 2);
+		} else if(gameOver) {
+			AssetHandler.getFont(20).draw(batch, "Game over! (You lost) Use the portal to restart.", camera.position.x + 4 - camera.viewportWidth / 2, camera.position.y - 16 + camera.viewportHeight / 2);
+		}
 		AssetHandler.getFont(20).draw(batch, "Unlocked shifts:", camera.position.x + 4 - camera.viewportWidth / 2, camera.position.y + 4 - camera.viewportHeight / 2);
 		
 		for(int i = 0; i < Organisms.values().length; i++) {
@@ -76,12 +83,23 @@ public class Playing implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		
+		float scale = height / 400;
+		camera.setToOrtho(true, width / scale, height / scale);
 	}
 	
 	public static void changeMap(TileMap map) {
 		Playing.map = map;
 		mapChanged = true;
+		setWinner(false);
+		setGameOver(false);
+	}
+	
+	public static void setWinner(boolean won) {
+		winner = won;
+	}
+	
+	public static void setGameOver(boolean gameOver) {
+		Playing.gameOver = gameOver;
 	}
 
 	@Override

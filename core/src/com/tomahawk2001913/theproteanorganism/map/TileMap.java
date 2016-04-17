@@ -12,6 +12,8 @@ import com.tomahawk2001913.theproteanorganism.organisms.Organism;
 import com.tomahawk2001913.theproteanorganism.organisms.Organisms;
 import com.tomahawk2001913.theproteanorganism.organisms.Player;
 import com.tomahawk2001913.theproteanorganism.organisms.Portal;
+import com.tomahawk2001913.theproteanorganism.organisms.RestartPortal;
+import com.tomahawk2001913.theproteanorganism.organisms.WinnerPortal;
 import com.tomahawk2001913.theproteanorganism.screens.Playing;
 
 public class TileMap {
@@ -49,14 +51,31 @@ public class TileMap {
 				for(Organism check : organisms) {
 					if(organism.getBounds().overlaps(check.getBounds())) {
 						if(check instanceof Enemy) {
-							System.out.println("Game Over");
+							if(check.getType() == Organisms.SPIKES) {
+								Playing.setGameOver(true);
+								Playing.changeMap(TileMap.convertMapArray(AssetHandler.gameOver));
+							} else if(check.getType() == Organisms.RABBITPOISON && organism.getType() == Organisms.RABBIT) {
+								Playing.setGameOver(true);
+								Playing.changeMap(TileMap.convertMapArray(AssetHandler.gameOver));
+							}
 						} else if(check instanceof Coin) {
 							check.getType().setUnlocked(true);
 							removeOrganism(check);
 							AssetHandler.coinCollected.play(1.0f);
 						} else if(check instanceof Portal) {
-							System.out.println("CHANGE MAP");
-							Playing.changeMap(((Portal) check).getDestination());
+							if(check instanceof WinnerPortal) {
+								Playing.setWinner(true);
+								Playing.changeMap(((Portal) check).getDestination());
+							}
+							else if(check instanceof RestartPortal) {
+								Playing.setWinner(true);
+								Playing.setGameOver(true);
+							} else {
+								Playing.setWinner(false);
+								Playing.setGameOver(false);
+								
+								Playing.changeMap(((Portal) check).getDestination());
+							}
 						}
 					}
 				}
@@ -107,8 +126,22 @@ public class TileMap {
 				} else if(array[y][x] == -4) {
 					convert.addOrganism(new Portal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), convertMapArray(AssetHandler.map2)));
 					tiles[x][y] = Tiles.AIR;
-				}
-				else tiles[x][y] = Tiles.values()[array[y][x]];
+				} else if(array[y][x] == -5) {
+					convert.addOrganism(new Enemy(new Vector2(x * TILE_DIMENSION , y * TILE_DIMENSION + 32), Organisms.RABBITPOISON, convert));
+					tiles[x][y] = Tiles.AIR;
+				} else if(array[y][x] == -6) {
+					convert.addOrganism(new Portal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), convertMapArray(AssetHandler.map3)));
+					tiles[x][y] = Tiles.AIR;
+				} else if(array[y][x] == -7) {
+					convert.addOrganism(new Portal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), convertMapArray(AssetHandler.map1)));
+					tiles[x][y] = Tiles.AIR;
+				} else if(array[y][x] == -8) {
+					convert.addOrganism(new WinnerPortal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), convertMapArray(AssetHandler.winner)));
+					tiles[x][y] = Tiles.AIR;
+				} else if(array[y][x] == -9) {
+					convert.addOrganism(new RestartPortal(new Vector2(x * TILE_DIMENSION, y * TILE_DIMENSION), null));
+					tiles[x][y] = Tiles.AIR;
+				} else tiles[x][y] = Tiles.values()[array[y][x]];
 			}
 		}
 		

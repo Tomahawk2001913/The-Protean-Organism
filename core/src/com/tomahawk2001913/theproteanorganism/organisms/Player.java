@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.tomahawk2001913.theproteanorganism.map.TileMap;
 
 public class Player extends Organism {
-	private boolean ignoreStopRight = false, ignoreStopLeft = false;
+	private boolean ignoreStopRight = true, ignoreStopLeft = true;
 	
 	public Player(Vector2 location, Organisms type, TileMap map) {
 		super(location, type, map);
@@ -12,6 +12,7 @@ public class Player extends Organism {
 	
 	public void moveRight() {
 		getVelocity().x += getType().getSpeed();
+		ignoreStopRight = false;
 	}
 	
 	public void stopMovingRight() {
@@ -21,6 +22,7 @@ public class Player extends Organism {
 	
 	public void moveLeft() {
 		getVelocity().x -= getType().getSpeed();
+		ignoreStopLeft = false;
 	}
 	
 	public void stopMovingLeft() {
@@ -33,20 +35,27 @@ public class Player extends Organism {
 	}
 	
 	public void shiftDown() {
-		if(getType().ordinal() > 0 && Organisms.values()[getType().ordinal() - 1].isUnlocked()) {
-			changeType(Organisms.values()[getType().ordinal() - 1]);
-			if(getVelocity().x > 0) ignoreStopRight = true;
-			else if(getVelocity().x < 0) ignoreStopLeft = true;
-			getVelocity().x = 0;
+		for(int i = Organisms.values().length - 1; i >= 0; i--) {
+			Organisms organism = Organisms.values()[i];
+			if(organism.ordinal() < getType().ordinal() && organism.isUnlocked()) {
+				if(getVelocity().x > 0) ignoreStopRight = true;
+				else if(getVelocity().x < 0) ignoreStopLeft = true;
+				getVelocity().x = 0;
+				changeType(organism);
+				break;
+			}
 		}
 	}
 	
 	public void shiftUp() {
-		if(getType().ordinal() < Organisms.values().length && Organisms.values()[getType().ordinal() + 1].isUnlocked()) {
-			changeType(Organisms.values()[getType().ordinal() + 1]);
-			if(getVelocity().x > 0) ignoreStopRight = true;
-			else if(getVelocity().x < 0) ignoreStopLeft = true;
-			getVelocity().x = 0;
+		for(Organisms organism : Organisms.values()) {
+			if(organism.ordinal() > getType().ordinal() && organism.isUnlocked()) {
+				if(getVelocity().x > 0) ignoreStopRight = true;
+				else if(getVelocity().x < 0) ignoreStopLeft = true;
+				getVelocity().x = 0;
+				changeType(organism);
+				break;
+			}
 		}
 	}
 }

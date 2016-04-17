@@ -7,6 +7,7 @@ import com.tomahawk2001913.theproteanorganism.TPOMain;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = "The Protean Organism";
 		new LwjglApplication(new TPOMain(), config);
 	}
 }
